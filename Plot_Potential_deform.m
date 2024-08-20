@@ -1,0 +1,92 @@
+%Delta=0.1 kappa
+% q'=g/k *q
+%g^2/k^2/Omega V(q')
+close all
+Delta_kappa_frac=10^-3;
+
+Vpqp_n=simplify(g^2/kappa^2/Omega*subs(V,[Delta,x],[Delta_kappa_frac*kappa,kappa/g*q_p]));
+DD=0.4;
+qq=linspace(-0.9, 0.9, 1000);
+tmp=simplify(subs(Vpqp_n,n,0))  %symbolic F(q_p)
+tmp1=diff(tmp,q_p) ;
+tmp2=simplify(subs(Gamma-gamma,[Delta,x],[Delta_kappa_frac*kappa,kappa/g*q_p]));
+%symbolic F(d q_p/d q_p)
+FVpqp_n0=matlabFunction(tmp);
+FdVpqp_n0=matlabFunction(tmp1/q_p);
+FGamma_gamma=matlabFunction(subs(kappa/2/Omega^2*tmp2,n,subs(n00,Delta,Delta_kappa_frac*kappa)  )) ;  
+
+plot(qq,FVpqp_n0(qq),'LineWidth',2)
+hold on
+for iq=1:5
+tmp=simplify(subs(Vpqp_n,n,subs(n00*(1+DD*iq-2*DD),Delta,Delta_kappa_frac*kappa)));
+FVpqp_n=matlabFunction(tmp);
+
+plot(qq,FVpqp_n(qq),'LineWidth',2)
+
+end
+grid on
+Grap.legendsize=15;
+Grap.fontsize=20;
+Grap.numfontsize=12;
+ax = gca;
+ax.XAxis.FontSize = Grap.numfontsize;
+ax.YAxis.FontSize = Grap.numfontsize;
+ax.ZAxis.FontSize = Grap.numfontsize;
+
+
+%xlim([-0.9,0.9])
+legend(["$n=0$",...
+         ['$n=',num2str(1-DD),'n_c $'],...
+         ['$n=',num2str(1),'n_c $'],...
+         ['$n=',num2str(1+DD),'n_c $'],...
+         ['$n=',num2str(1+2*DD),'n_c $'],...
+         ['$n=',num2str(1+3*DD),'n_c $'] ],'Interpreter','latex','FontSize',Grap.legendsize,'location','best')
+xlabel('$\frac{g}{\kappa} q$','Interpreter','latex','FontSize',Grap.fontsize);
+ylabel('$\frac{g^2}{\kappa^2}\frac{V}{\hbar \Omega}$','Interpreter','latex','FontSize',Grap.fontsize);
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%
+%%
+qq=linspace(-1, 1, 1000);
+
+
+figure
+
+
+plot(qq,0*qq,'LineWidth',2)
+hold on
+for iq=1:5
+tmp=simplify(subs(Vpqp_n,n,subs(n00*(1+DD*iq-2*DD),Delta,Delta_kappa_frac*kappa)));
+tmp2=simplify(subs(Gamma-gamma,[Delta,x],[Delta_kappa_frac*kappa,kappa/g*q_p]));
+FGamma_gamma=matlabFunction(subs(kappa/2/Omega^2*tmp2,n,subs(n00*(1+DD*iq-2*DD),Delta,Delta_kappa_frac*kappa)  ))  ; 
+
+plot(qq,FGamma_gamma(qq),'LineWidth',2)
+
+end
+
+grid on
+Grap.legendsize=15;
+Grap.fontsize=20;
+Grap.numfontsize=12;
+ax = gca;
+ax.XAxis.FontSize = Grap.numfontsize;
+ax.YAxis.FontSize = Grap.numfontsize;
+ax.ZAxis.FontSize = Grap.numfontsize;
+
+
+%xlim([-2,2])
+legend([["$n=0$"],...
+         ['$n=',num2str(1-DD),'n_c $'],...
+         ['$n=',num2str(1),'n_c $'],...
+         ['$n=',num2str(1+DD),'n_c $'],...
+         ['$n=',num2str(1+2*DD),'n_c $'],...
+         ['$n=',num2str(1+3*DD),'n_c $'] ],'Interpreter','latex','FontSize',Grap.legendsize,'location','best')
+xlabel('$\frac{g}{\kappa} q$','Interpreter','latex','FontSize',Grap.fontsize);
+ylabel('$\frac{\kappa}{2 \Omega^2} (\Gamma-\gamma_m)$','Interpreter','latex','FontSize',Grap.fontsize);
+
+
+
+
+

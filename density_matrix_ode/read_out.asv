@@ -1,0 +1,106 @@
+close all
+tic
+% 定义X和Y的范围
+x = x;
+xp = x;
+N_skip=100;
+%rhot{end}
+[SX,SY]=size(baseiT(1:N_skip:end,1)*baseiT(1:N_skip:end,1)');
+rho_x_xp=zeros(SX,SY);
+
+
+
+%%
+subplot(1,2,1)
+
+rho_x_xp0=eigenfunctions(1:N_skip:end,1)*eigenfunctions(1:N_skip:end,1)';
+
+
+
+axisRange=[-1,1]*100;
+YRange_fac=120;
+% 使用imagesc显示数据
+imagesc(x, xp, abs(rho_x_xp0));
+
+%surf(Q,P,real(rho_x_xp0))
+
+
+xlim(axisRange)
+ylim(axisRange)
+
+axis xy; % 确保Y轴是从下到上
+colorbar; % 添加颜色条
+
+rho_plot=rhot{end};
+%rho_plot=eye(N_state)/N_state;
+% rho_plot=zeros(N_state,N_state);
+% rho_plot(1)=1;
+
+subplot(1,2,2)
+for ir=1:N_state
+    for jr=1:N_state
+        rho_x_xp=rho_x_xp+baseiT(1:N_skip:end,ir)*baseiT(1:N_skip:end,jr)'*rho_plot(ir,jr);
+
+    end
+end
+% imagesc(x, xp,abs(rho_x_xp)-abs(rho_x_xp0))
+% colorbar; % 添加颜色条
+% 使用imagesc显示数据
+imagesc(x, xp, abs(rho_x_xp));
+xlim(axisRange)
+ylim(axisRange)
+axis xy; % 确保Y轴是从下到上
+colorbar; % 添加颜色条
+
+% 添加标题和标签
+
+xlabel('x');
+ylabel('x^{\prime}');
+
+%%
+q=x(1:N_skip:end)/max(x)^2*200;
+p=x(1:N_skip:end)';
+ddx=mean(diff(q));
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+rhoxx=rho_x_xp;
+[Q, P] = meshgrid(q,p);
+M_=1:size(Q,1);
+N_=1:size(P,2);
+MpN=M_+N_';
+WignerF=zeros(size(Q));
+
+for m = M_
+    m/size(Q,1)
+    toc
+    for n = N_
+        % 定义在相空间的点
+
+
+        rho_tmp=rhoxx(find(MpN==2*m));
+        ny=(1:length(rho_tmp))-((1+length(rho_tmp))/2);
+
+        expfac=exp(1j*p(n)*sqrt(2)*ddx.*ny); % y_i=sqrt(2)*ddx.*ny
+
+        WignerF(m, n) = 1/2/pi* 2*ddx *sum(expfac*rho_tmp);
+    end
+end
+figure
+subplot(1,2,1)
+imagesc(p, q, real(WignerF)');
+xlable(''x)
+xlim(axisRange)
+ylim(axisRange/YRange_fac)
+colorbar;
+subplot(1,2,2)
+surf(P,Q,real(WignerF))
+xlim(axisRange)
+ylim(axisRange/YRange_fac)
+colorbar;
+
+
+
+
+
+
+
+

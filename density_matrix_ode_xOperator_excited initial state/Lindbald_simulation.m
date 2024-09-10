@@ -5,12 +5,12 @@ clear  ;clc; close all
 
 %%  K matrix
 tic
-L = 400; % Region size
+L = 250; % Region size
 hbar = 1; % Reduced Planck's constant
 m = 1;    % Electron mass
 % Define the size of the region and the number of points for discretization
 N = 2*10^4;   % Number of points for discretization  5*10^5 is enough for L = 5*10^3
-N_state=400;%0;   % Number of states from vacuum
+N_state=100;%0;   % Number of states from vacuum
 Nalpha=1000;% 1000
 dx = L / N; % Discretization step
 x = linspace(-L/2, L/2, N);
@@ -23,7 +23,7 @@ Vpar.g=2*pi*6.1/sqrt(Vpar.Omega/2/pi)*20; %Hz
 %%
 
 
-Dalpha=0.0004; %size of alpha region %0.002
+Dalpha=0.0004*2; %size of alpha region %0.002
 Vpar.nc=Vpar.Omega*(4*Vpar.Delta^2+Vpar.kappa^2)/(16*Vpar.g^2*Vpar.Delta);
 FV_alpha1= @(alpha) (1/2*Vpar.Omega*x.^2+...
     alpha*Vpar.nc*(Vpar.Delta^2+Vpar.kappa^2/4)/(Vpar.kappa/2).*...
@@ -36,7 +36,7 @@ DHDn=DHDn-min(DHDn);
 ial=linspace(1,1+Dalpha,Nalpha);  %
 Dn_nc=mean(diff(ial));
 
-[eigenfunctions,eigenvalues]=Eigen_state_value(N,FV_alpha(ial(1)),hbar,m,dx,N_state);
+[eigenfunctions,eigenvalues]=Eigen_state_value(N,FV_alpha(ial(1)),hbar,m,dx,N_state);  %This is nomalized energy
 Gound_state_ini=eigenfunctions(:,1) ; %N_state copies
 inner_0_poi=find(mod([1:N_state]+[1:N_state]',2)==1);
 
